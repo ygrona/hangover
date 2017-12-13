@@ -154,8 +154,8 @@ public class DispatcherConfig extends WebMvcConfigurerAdapter implements Applica
                 socketContainer.getSessions().forEach((k,v)-> {
                     if (!k.equals(sessionId)) {
                         newHeaders.put(SimpMessageHeaderAccessor.SESSION_ID_HEADER, k);
-                        Message out = MessageBuilder.createMessage("["+sessionId+"=>"+k+"]: " + message.getPayload(),
-                                new MessageHeaders(newHeaders));
+                        Message out = MessageBuilder.withPayload("["+sessionId+"=>"+k+"]: " + message.getPayload())
+                                .copyHeaders(newHeaders).build();
 
                         webSocketOutboundAdapter().handleMessage(out);
                     }
