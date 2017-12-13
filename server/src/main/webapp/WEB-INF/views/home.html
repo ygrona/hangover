@@ -1,0 +1,51 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        var loc = window.location;
+        var ws = null;
+        var initws = function() {
+            ws = new WebSocket($("#lnk").val());
+            $("#lnk").css('background-color', 'yellow');
+            ws.onopen = function(evt) {
+                $("#lnk").css('background-color', 'green');
+            };
+
+            ws.onmessage = function(evt) {
+                console.log("rec: " + evt.data);
+                tar = $('#tar');
+                tar.val(tar.val() + '\n' + evt.data);
+            };
+            ws.onclose = function(evt) {
+                $("#lnk").css('background-color', '#bbb');
+            };
+
+            $("#snd").click(function() {
+                ws.send($('#inp').val());
+            });
+            return ws;
+        }
+
+        $(document).ready(function() {
+            $("#cnct").click(function() {
+                ws = initws();
+            });
+            $("#cln").click(function() {
+                $('#tar').val('');
+            });
+            $('#lnk').val('ws://' + loc.host + "/names");
+        });
+    </script>
+</head>
+<body>
+<button id='cnct'>Connect</button>
+<input id="lnk" type="text" style="background-color:#ccc" value='ws://localhost:8080/names'></input>
+<div id="cdiv" style="width:100px height:100px">dis</div>
+<button id="snd">Send</button>
+<input id='inp' type="text" style="background-color:#ccc" value='abc'></input>
+<div>
+    <textarea style="width:200px;height:200px;" id='tar'></textarea>
+    <button id="cln">Clean</button>
+</div>
+</body>
+</html>
